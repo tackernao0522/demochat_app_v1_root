@@ -20,4 +20,5 @@
 // 追記
 # original
 .DS_Store
-.env
+.env.development
+.env.production
