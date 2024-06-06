@@ -1,0 +1,37 @@
+app = "demochat-api"
+
+[build]
+  dockerfile = "api/Dockerfile.prod"
+
+[env]
+  RACK_ENV = "production"
+  RAILS_ENV = "production"
+  RAILS_LOG_TO_STDOUT = "enabled"
+  RAILS_SERVE_STATIC_FILES = "enabled"
+
+[deploy]
+  release_command = "bundle exec rails db:create db:migrate"
+
+[experimental]
+  private_network = true
+
+[[services]]
+  internal_port = 3000
+  protocol = "tcp"
+
+  [[services.ports]]
+    handlers = ["http"]
+    port = 80
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
+
+  [[services.tcp_checks]]
+    grace_period = "1s"
+    interval = "15s"
+    restart_limit = 6
+    timeout = "2s"
+
+[region]
+  primary = "nrt"
