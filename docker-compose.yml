@@ -1,0 +1,37 @@
+services:
+  db:
+    image: postgres:15.7-alpine3.19
+    environment:
+      TZ: UTC
+      PGTZ: UTC
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+    volumes:
+      - ./api/tmp/db:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: ./api
+      args:
+        WORKDIR: $WORKDIR
+    environment:
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+    volumes:
+      - "./api:/$WORKDIR"
+    depends_on:
+      - db
+    ports:
+      - "$API_PORT:3000"
+
+  front:
+    build:
+      context: ./front
+      args:
+        WORKDIR: $WORKDIR
+    # コンテナで実行したいコマンド(CMD)
+    command: yarn run dev
+    volumes:
+      - "./front:/$WORKDIR"
+    ports:
+      - "$FRONT_PORT:3000"
+    depends_on:
+      - api
