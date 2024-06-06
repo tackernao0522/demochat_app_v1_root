@@ -3,4 +3,4 @@
   url = https://github.com/tackernao0522/demochat_app_v1_api
 [submodule "front"]
   patch = front
-  url = https://github.com/tackernao0522/demochat_app_v1_front
+  url = httos://github.com/tackernao0522/demochat_app_v1_front
