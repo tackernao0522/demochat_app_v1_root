@@ -11,6 +11,7 @@ services:
   api:
     build:
       context: ./api
+      dockerfile: Dockerfile.dev
       args:
         WORKDIR: $WORKDIR
     environment:
@@ -38,3 +39,6 @@ services:
       - "$FRONT_PORT:3000"
     depends_on:
       - api
+
+    env_file:
+      - .env.development

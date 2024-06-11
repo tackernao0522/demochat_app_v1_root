@@ -1,7 +1,7 @@
 app = "demochat-api"
 
 [build]
-  dockerfile = "api/Dockerfile"
+  dockerfile = "api/Dockerfile.prod"
 
 [env]
   RACK_ENV = "production"
