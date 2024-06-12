@@ -11,6 +11,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Verify files after checkout
+          command: ls -R
+      - run:
           name: Set up environment variables
           command: |
             echo "WORKDIR=$WORKDIR" > .env.development
