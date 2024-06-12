@@ -10,30 +10,20 @@ jobs:
   build_and_test:
     executor: docker-executor
     steps:
+      - checkout
       - setup_remote_docker:
           version: 20.10.7
-      - add_ssh_keys:
-          fingerprints:
-            - "SHA256:9La0keetW93Pwz2xoEoQ4BmsNJzVtAQvygOdRu0HWn8"
-            - "SHA256:R1DdhVKI7FUfejs7qy9Ag5Imdt8dMJcp0AgeKGm7rz4"
-            - "SHA256:Vh5iZGhN3QBhhzwlrropmYKosWotv0fdz4iWSzwaWR0"
-      - checkout
       - run:
-          name: Initialize Submodules
+          name: Set up Database
           command: |
-            git submodule init
-            git submodule update
-      - run:
-          name: Export Environment Variables
-          command: |
-            export $(cat .env.development | xargs)
-      - run:
-          name: Start Database
-          command: docker-compose -f docker-compose.dev.yml up -d db
-      - run:
-          name: Wait for Database
-          command: |
-            dockerize -wait tcp://localhost:5432 -timeout 1m
+            sudo apt-get update
+            sudo apt-get install -y postgresql-client
+            docker-compose -f docker-compose.dev.yml up -d db
+            sleep 10
+            cd api
+            gem install bundler
+            bundle install
+            bundle exec rails db:create db:schema:load db:migrate
       - run:
           name: Check Directory Structure
           command: |
@@ -45,11 +35,6 @@ jobs:
             cd api
             gem install bundler
             bundle install
-      - run:
-          name: Set up Database
-          command: |
-            cd api
-            bundle exec rails db:create db:schema:load db:migrate
       - run:
           name: Run Tests
           command: |
