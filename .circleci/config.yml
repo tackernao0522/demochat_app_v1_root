@@ -50,7 +50,7 @@ jobs:
       - run:
           name: Get DB container IP
           command: |
-            DB_CONTAINER_ID=$(docker ps --filter "name=_db" --quiet) # フィルタ条件を変更
+            DB_CONTAINER_ID=$(docker ps --filter "name=_db" --quiet)
             DB_CONTAINER_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' $DB_CONTAINER_ID)
             echo "Database IP: $DB_CONTAINER_IP"
 
