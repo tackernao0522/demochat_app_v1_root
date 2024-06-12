@@ -4,12 +4,16 @@ executors:
   docker-executor:
     docker:
       - image: cimg/ruby:3.3.2 # 利用可能なバージョンを指定
-      - image: cimg/postgres:15.7-postgis
     working_directory: ~/repo
 
 jobs:
   build_and_test:
     executor: docker-executor
+    environment:
+      WORKDIR: app
+      API_PORT: 3000
+      FRONT_PORT: 8080
+      POSTGRES_PASSWORD: password
     steps:
       - checkout
       - setup_remote_docker:
@@ -19,6 +23,13 @@ jobs:
           command: |
             git submodule init
             git submodule update
+      - run:
+          name: Create .env.development file
+          command: |
+            echo "WORKDIR=app" > .env.development
+            echo "API_PORT=3000" >> .env.development
+            echo "FRONT_PORT=8080" >> .env.development
+            echo "POSTGRES_PASSWORD=password" >> .env.development
       - run:
           name: Set up Database
           command: |
