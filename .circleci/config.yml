@@ -45,6 +45,12 @@ jobs:
             docker-compose -f docker-compose.dev.yml ps
 
       - run:
+          name: Wait for DB
+          command: |
+            gem install dockerize
+            dockerize -wait tcp://db:5432 -timeout 30s
+
+      - run:
           name: Check database logs
           command: docker-compose -f docker-compose.dev.yml --env-file .env.development logs db
 
