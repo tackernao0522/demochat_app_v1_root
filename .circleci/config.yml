@@ -27,7 +27,7 @@ jobs:
           name: Make wait-for-it.sh executable
           command: |
             cd api
-            chmod +x wait-for-it.sh
+            chmod +x ./wait-for-it.sh
 
       - run:
           name: Start database
