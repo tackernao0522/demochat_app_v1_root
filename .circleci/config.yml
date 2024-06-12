@@ -20,6 +20,7 @@ jobs:
           name: Install Dependencies
           command: |
             cd api
+            ls -la
             gem install bundler
             bundle install
       - run:
