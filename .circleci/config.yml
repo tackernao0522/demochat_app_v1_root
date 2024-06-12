@@ -4,7 +4,7 @@ executors:
   docker-executor:
     docker:
       - image: cimg/ruby:3.3.2 # 利用可能なバージョンを指定
-      - image: postgres:15.7-alpine3.19
+      - image: cimg/postgres:15.7-postgis
     working_directory: ~/repo
 
 jobs:
