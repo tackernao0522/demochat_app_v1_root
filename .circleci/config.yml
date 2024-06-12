@@ -10,6 +10,7 @@ jobs:
     executor: docker-executor
     steps:
       - checkout
+
       - run:
           name: Verify files after checkout
           command: ls -R
@@ -24,7 +25,9 @@ jobs:
 
       - run:
           name: Make wait-for-it.sh executable
-          command: chmod +x api/wait-for-it.sh
+          command: |
+            cd api
+            chmod +x wait-for-it.sh
 
       - run:
           name: Start database
