@@ -17,6 +17,11 @@ jobs:
             - "SHA256:Vh5iZGhN3QBhhzwlrropmYKosWotv0fdz4iWSzwaWR0"
       - checkout
       - run:
+          name: Initialize Submodules
+          command: |
+            git submodule update --init --recursive
+            git submodule status
+      - run:
           name: Check Directory Structure
           command: |
             ls -la
