@@ -4,23 +4,25 @@ executors:
   docker-executor:
     docker:
       - image: cimg/ruby:3.3.2 # 利用可能なバージョンを指定
+      - image: cimg/postgres:15.7
     working_directory: ~/repo
 
 jobs:
   build_and_test:
     executor: docker-executor
     steps:
-      - add_ssh_keys:
-          fingerprints:
-            - "SHA256:9La0keetW93Pwz2xoEoQ4BmsNJzVtAQvygOdRu0HWn8"
-            - "SHA256:R1DdhVKI7FUfejs7qy9Ag5Imdt8dMJcp0AgeKGm7rz4"
-            - "SHA256:Vh5iZGhN3QBhhzwlrropmYKosWotv0fdz4iWSzwaWR0"
       - checkout
       - run:
           name: Initialize Submodules
           command: |
             git submodule init
             git submodule update
+      - run:
+          name: Set up Database
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y postgresql-client
+            bundle exec rails db:create db:schema:load db:migrate
       - run:
           name: Check Directory Structure
           command: |
