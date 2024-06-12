@@ -33,8 +33,12 @@ jobs:
       - run:
           name: Set up Database
           command: |
-            docker-compose -f docker-compose.dev.yml up -d db
-            sleep 10
+            docker-compose -f docker-compose.dev.yml --env-file .env.development up -d db
+            sleep 30  # 待機時間を30秒に増やす
+            docker-compose -f docker-compose.dev.yml ps  # コンテナの状態を確認
+      - run:
+          name: Install Dependencies
+          command: |
             cd api
             gem install bundler
             bundle install
@@ -44,12 +48,6 @@ jobs:
           command: |
             ls -la
             ls -la api
-      - run:
-          name: Install Dependencies
-          command: |
-            cd api
-            gem install bundler
-            bundle install
       - run:
           name: Run Tests
           command: |
