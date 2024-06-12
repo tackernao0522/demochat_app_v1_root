@@ -12,13 +12,10 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "SHA256:l2DSdb9EVwv0grpLzxeengkil0CkDkLdmvPSbyagI68" # ここにCircleCIのSSHキーのフィンガープリントを入力してください
+            - "SHA256:9La0keetW93Pwz2xoEoQ4BmsNJzVtAQvygOdRu0HWn8"
+            - "SHA256:R1DdhVKI7FUfejs7qy9Ag5Imdt8dMJcp0AgeKGm7rz4"
+            - "SHA256:Vh5iZGhN3QBhhzwlrropmYKosWotv0fdz4iWSzwaWR0"
       - checkout
-      - run:
-          name: Initialize and Update Submodules
-          command: |
-            git submodule init
-            git submodule update
       - run:
           name: Check Directory Structure
           command: |
