@@ -12,12 +12,17 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Create .env.development file
+          name: Set up Environment Variables
           command: |
-            echo 'WORKDIR=app' > .env.development
-            echo 'API_PORT=3000' >> .env.development
-            echo 'FRONT_PORT=8080' >> .env.development
-            echo 'POSTGRES_PASSWORD=password' >> .env.development
+            echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> .env.development
+            echo "WORKDIR=$WORKDIR" >> .env.development
+            echo "API_PORT=$API_PORT" >> .env.development
+            echo "FRONT_PORT=$FRONT_PORT" >> .env.development
+      - run:
+          name: Initialize Submodules
+          command: |
+            git submodule init
+            git submodule update
       - run:
           name: Set up Database
           command: |
@@ -25,27 +30,13 @@ jobs:
             sudo apt-get install -y postgresql-client
             docker-compose -f docker-compose.dev.yml up -d db
             sleep 10
-      - run:
-          name: Initialize Submodules
-          command: |
-            git submodule init
-            git submodule update
-      - run:
-          name: Check Directory Structure
-          command: |
-            ls -la
-            ls -la api
+            docker-compose -f docker-compose.dev.yml run --rm api bundle exec rails db:create db:schema:load db:migrate
       - run:
           name: Install Dependencies
           command: |
             cd api
             gem install bundler
             bundle install
-      - run:
-          name: Set up Database for Rails
-          command: |
-            cd api
-            bundle exec rails db:create db:schema:load db:migrate
       - run:
           name: Run Tests
           command: |
