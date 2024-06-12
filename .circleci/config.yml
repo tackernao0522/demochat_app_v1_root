@@ -13,6 +13,7 @@ jobs:
       - run:
           name: Verify files after checkout
           command: ls -R
+
       - run:
           name: Set up environment variables
           command: |
@@ -20,18 +21,22 @@ jobs:
             echo "API_PORT=$API_PORT" >> .env.development
             echo "FRONT_PORT=$FRONT_PORT" >> .env.development
             echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> .env.development
+
       - run:
           name: Make wait-for-it.sh executable
           command: chmod +x api/wait-for-it.sh
+
       - run:
           name: Start database
           command: |
             docker-compose -f docker-compose.dev.yml --env-file .env.development up -d db
             sleep 30
             docker-compose -f docker-compose.dev.yml ps
+
       - run:
           name: Check database logs
           command: docker-compose -f docker-compose.dev.yml --env-file .env.development logs db
+
       - run:
           name: Install dependencies and set up database
           command: |
