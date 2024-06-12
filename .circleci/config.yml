@@ -4,7 +4,7 @@ executors:
   docker-executor:
     docker:
       - image: circleci/ruby:3.0
-    working_directory: ~/repo/root
+    working_directory: ~/repo
 
 jobs:
   build_and_test:
@@ -12,15 +12,20 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Check Directory Structure
+          command: |
+            ls -la
+            ls -la api
+      - run:
           name: Install Dependencies
           command: |
-            cd root
+            cd api
             gem install bundler
             bundle install
       - run:
           name: Run Tests
           command: |
-            cd root
+            cd api
             bundle exec rspec
 
 workflows:
