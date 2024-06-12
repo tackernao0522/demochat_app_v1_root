@@ -4,14 +4,14 @@ executors:
   docker-executor:
     docker:
       - image: cimg/ruby:3.3.2
-      - image: cimg/postgres:15.7-postgis
+      # - image: cimg/postgres:15.7-postgis
     working_directory: ~/repo
 
 jobs:
   build:
     docker:
       - image: cimg/ruby:3.3.2
-      - image: cimg/postgres:15.7-postgis
+      # - image: cimg/postgres:15.7-postgis
     steps:
       - checkout
       - run:
