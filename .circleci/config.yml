@@ -3,7 +3,7 @@ version: 2.1
 executors:
   docker-executor:
     docker:
-      - image: circleci/ruby:3.2.0 # 3.2.0を使用
+      - image: cimg/ruby:3.3.2 # 3.3.2を使用
     working_directory: ~/repo
 
 jobs:
