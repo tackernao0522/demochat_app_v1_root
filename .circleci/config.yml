@@ -37,6 +37,10 @@ jobs:
             sleep 30
             docker-compose -f docker-compose.dev.yml ps
       - run:
+          name: Check DB Logs
+          command: |
+            docker-compose -f docker-compose.dev.yml --env-file .env.development logs db
+      - run:
           name: Install Dependencies
           command: |
             cd api
