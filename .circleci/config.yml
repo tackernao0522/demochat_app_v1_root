@@ -30,10 +30,6 @@ jobs:
             echo "FRONT_PORT=$FRONT_PORT" >> .env.development
             echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> .env.development
 
-      - run:
-          name: Make wait-for-it.sh executable
-          command: chmod +x api/wait-for-it.sh
-
       - setup_remote_docker:
           version: 20.10.7
 
@@ -69,7 +65,8 @@ jobs:
             cd api
             gem install bundler
             bundle install
-            ./wait-for-it.sh db:5432 -- bundle exec rails db:create db:schema:load db:migrate
+            dockerize -wait tcp://db:5432 -timeout 30s
+            bundle exec rails db:create db:schema:load db:migrate
 
 workflows:
   version: 2
