@@ -1,6 +1,6 @@
 [submodule "api"]
   path = api
-  url = https://github.com/tackernao0522/demochat_app_v1_api
+  url = git@github.com:tackernao0522/demochat_app_v1_api.git
 [submodule "front"]
   path = front
-  url = https://github.com/tackernao0522/demochat_app_v1_front
+  url = git@github.com:tackernao0522/demochat_app_v1_front.git
