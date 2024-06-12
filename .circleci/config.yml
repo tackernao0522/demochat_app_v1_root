@@ -36,7 +36,7 @@ jobs:
           name: Start database
           command: |
             docker-compose -f docker-compose.dev.yml --env-file .env.development up -d db
-            sleep 30
+            sleep 60
             docker-compose -f docker-compose.dev.yml ps
 
       - run:
@@ -50,7 +50,7 @@ jobs:
       - run:
           name: Get DB container IP
           command: |
-            DB_CONTAINER_ID=$(docker ps --filter "name=root_db" --quiet)
+            DB_CONTAINER_ID=$(docker ps --filter "name=_db" --quiet) # フィルタ条件を変更
             DB_CONTAINER_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' $DB_CONTAINER_ID)
             echo "Database IP: $DB_CONTAINER_IP"
 
