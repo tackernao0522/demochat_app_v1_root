@@ -3,7 +3,7 @@ version: 2.1
 executors:
   docker-executor:
     docker:
-      - image: cimg/ruby:3.3.2 # 利用可能なバージョンを指定
+      - image: cimg/ruby:3.3.2
     working_directory: ~/repo
 
 jobs:
