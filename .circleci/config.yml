@@ -4,7 +4,7 @@ executors:
   docker-executor:
     docker:
       - image: circleci/ruby:3.2
-    working_directory: ~/repo/root
+    working_directory: ~/repo
 
 jobs:
   build_and_test:
