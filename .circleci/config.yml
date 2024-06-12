@@ -4,10 +4,14 @@ executors:
   docker-executor:
     docker:
       - image: cimg/ruby:3.3.2
+      - image: circleci/postgres:13.2
+    working_directory: ~/repo
 
 jobs:
   build:
-    executor: docker-executor
+    docker:
+      - image: cimg/ruby:3.3.2
+      - image: circleci/postgres:13.2
     steps:
       - checkout
       - run:
@@ -18,8 +22,7 @@ jobs:
 
       - run:
           name: Verify files after checkout
-          command: |
-            ls -R api
+          command: ls -R api
 
       - run:
           name: Set up environment variables
@@ -31,8 +34,11 @@ jobs:
 
       - run:
           name: Make wait-for-it.sh executable
-          command: |
-            chmod +x api/wait-for-it.sh
+          command: chmod +x api/wait-for-it.sh
+
+      - setup_remote_docker:
+          version: 20.10.7
+          docker_layer_caching: true
 
       - run:
           name: Start database
