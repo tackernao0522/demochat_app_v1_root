@@ -13,7 +13,8 @@ jobs:
 
       - run:
           name: Verify files after checkout
-          command: ls -R
+          command: |
+            ls -R api
 
       - run:
           name: Set up environment variables
@@ -26,8 +27,7 @@ jobs:
       - run:
           name: Make wait-for-it.sh executable
           command: |
-            cd api
-            chmod +x ./wait-for-it.sh
+            chmod +x api/wait-for-it.sh
 
       - run:
           name: Start database
