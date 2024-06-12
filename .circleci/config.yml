@@ -10,12 +10,10 @@ jobs:
   build_and_test:
     executor: docker-executor
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:l2DSdb9EVwv0grpLzxeengkil0CkDkLdmvPSbyagI68" # ここにCircleCIのSSHキーのフィンガープリントを入力してください
       - checkout
-      - run:
-          name: Initialize and Update Submodules
-          command: |
-            git submodule init
-            git submodule update
       - run:
           name: Check Directory Structure
           command: |
@@ -25,7 +23,6 @@ jobs:
           name: Install Dependencies
           command: |
             cd api
-            ls -la
             gem install bundler
             bundle install
       - run:
