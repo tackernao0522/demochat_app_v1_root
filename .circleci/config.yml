@@ -29,8 +29,7 @@ jobs:
             echo "FRONT_PORT=$FRONT_PORT" >> .env.development
             echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> .env.development
 
-      - setup_remote_docker:
-          version: 23.0.1
+      - setup_remote_docker
 
       - run:
           name: Start database
