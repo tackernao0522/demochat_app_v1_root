@@ -21,7 +21,7 @@ jobs:
       - run:
           name: Start database
           command: |
-            docker-compose -f docker-compose.dev.yml up -d
+            docker-compose -f docker-compose.dev.yml up -d db
             sleep 60
             docker-compose -f docker-compose.dev.yml ps
       - run:
