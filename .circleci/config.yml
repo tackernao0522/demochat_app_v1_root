@@ -12,9 +12,12 @@ jobs:
       - run:
           name: Create .env.development file
           command: |
-            echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" > .env.development
-            echo "POSTGRES_USER=your_postgres_user" >> .env.development
-            echo "POSTGRES_DB=your_database_name" >> .env.development
+            echo "POSTGRES_PASSWORD=password" > .env.development
+            echo "POSTGRES_USER=postgres" >> .env.development
+            echo "POSTGRES_DB=demochat_api_development" >> .env.development
+            echo "WORKDIR=app" >> .env.development
+            echo "API_PORT=3000" >> .env.development
+            echo "FRONT_PORT=8080" >> .env.development
       - run:
           name: Start Database
           command: |
