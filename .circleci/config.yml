@@ -1,10 +1,19 @@
 version: 2.1
 
-jobs:
-  build:
+executors:
+  docker-executor:
     docker:
       - image: cimg/ruby:3.3.2
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+      - image: circleci/postgres:13.3
+
+jobs:
+  build:
+    executor: docker-executor
     steps:
+      - setup_remote_docker
       - checkout
       - run:
           name: Set up .env.development
