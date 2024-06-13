@@ -4,13 +4,10 @@ jobs:
   build:
     docker:
       - image: cimg/ruby:3.3.2
-    working_directory: ~/project
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 20.10.7
       - run:
-          name: Create .env.development file
+          name: Set up .env.development
           command: |
             echo "POSTGRES_PASSWORD=password" > .env.development
             echo "POSTGRES_USER=postgres" >> .env.development
@@ -19,9 +16,12 @@ jobs:
             echo "API_PORT=3000" >> .env.development
             echo "FRONT_PORT=8080" >> .env.development
       - run:
-          name: Start Database
+          name: Copy .env.development to root
+          command: cp .env.development ~/
+      - run:
+          name: Start database
           command: |
-            docker-compose -f docker-compose.dev.yml --env-file .env.development up -d db
+            docker-compose -f docker-compose.dev.yml --env-file ~/.env.development up -d db
             sleep 60
             docker-compose -f docker-compose.dev.yml ps
       - run:
@@ -31,9 +31,9 @@ jobs:
             gem install bundler
             bundle install
             bundle exec rails db:create db:schema:load db:migrate
-      - run:
-          name: Build Frontend
-          command: |
-            cd front
-            npm install
-            npm run build
+
+workflows:
+  version: 2
+  build-and-test:
+    jobs:
+      - build
