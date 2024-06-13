@@ -4,10 +4,6 @@ executors:
   docker-executor:
     docker:
       - image: cimg/ruby:3.3.2
-        environment:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: demochat_api_development
     working_directory: ~/project
 
 jobs:
