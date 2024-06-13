@@ -1,3 +1,5 @@
+version: "3.8"
+
 networks:
   app-network:
     driver: bridge
@@ -15,7 +17,7 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -52,7 +54,6 @@ services:
     ports:
       - "$FRONT_PORT:3000"
     depends_on:
-      api:
-        condition: service_started
+      - api
     networks:
       - app-network
