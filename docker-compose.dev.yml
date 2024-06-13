@@ -1,5 +1,3 @@
-version: "3.8"
-
 networks:
   app-network:
     driver: bridge
@@ -43,14 +41,16 @@ services:
   front:
     build:
       context: ./front
-    environment:
-      API_URL: http://localhost:${API_PORT}
-    volumes:
-      - ./front:/app
+      args:
+        WORKDIR: $WORKDIR
+        API_URL: "http://localhost:$API_PORT" # 追加
+    # コンテナで実行したいコマンド(CMD)
     command: yarn run dev
+    volumes:
+      - "./front:/$WORKDIR"
+    ports:
+      - "$FRONT_PORT:3000"
     depends_on:
       - api
-    ports:
-      - "${FRONT_PORT}:3000"
     networks:
       - app-network
