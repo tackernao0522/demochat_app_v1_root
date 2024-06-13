@@ -4,6 +4,10 @@ executors:
   docker-executor:
     docker:
       - image: cimg/ruby:3.3.2
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: demochat_api_development
     working_directory: ~/project
 
 jobs:
@@ -25,6 +29,8 @@ jobs:
             echo "WORKDIR=app" >> ~/project/.env.development
             echo "API_PORT=3000" >> ~/project/.env.development
             echo "FRONT_PORT=8080" >> ~/project/.env.development
+      - setup_remote_docker:
+          version: 20.10.7
       - run:
           name: Start database
           command: |
