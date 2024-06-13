@@ -39,19 +39,6 @@ jobs:
             docker-compose -f docker-compose.dev.yml ps
 
       - run:
-          name: Install dockerize
-          command: |
-            wget https://github.com/jwilder/dockerize/releases/download/v0.7.0/dockerize-linux-amd64-v0.7.0.tar.gz
-            tar -xzvf dockerize-linux-amd64-v0.7.0.tar.gz
-            sudo cp dockerize /usr/local/bin/
-            rm -rf dockerize dockerize-linux-amd64-v0.7.0.tar.gz
-
-      - run:
-          name: Wait for DB
-          command: |
-            dockerize -wait tcp://db:5432 -timeout 60s
-
-      - run:
           name: Check database logs
           command: docker-compose -f docker-compose.dev.yml --env-file .env.development logs db
 
@@ -61,7 +48,6 @@ jobs:
             cd api
             gem install bundler
             bundle install
-            dockerize -wait tcp://db:5432 -timeout 30s
             bundle exec rails db:create db:schema:load db:migrate
 
 workflows:
