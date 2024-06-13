@@ -4,7 +4,7 @@ executors:
   docker-executor:
     docker:
       - image: cimg/ruby:3.3.2
-    # working_directory: ~/repo
+    working_directory: ~/repos
 
 jobs:
   build:
@@ -56,7 +56,7 @@ jobs:
       - run:
           name: Wait for DB
           command: |
-            dockerize -wait tcp://$DB_CONTAINER_IP:5432 -timeout 120s
+            dockerize -wait tcp://$DB_CONTAINER_IP:5432 -timeout 60s
 
       - run:
           name: Check database logs
