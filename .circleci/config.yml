@@ -48,15 +48,9 @@ jobs:
             rm -rf dockerize dockerize-linux-amd64-v0.7.0.tar.gz
 
       - run:
-          name: Get DB container IP
-          command: |
-            DB_CONTAINER_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' db)
-            echo "Database IP: $DB_CONTAINER_IP"
-
-      - run:
           name: Wait for DB
           command: |
-            dockerize -wait tcp://$DB_CONTAINER_IP:5432 -timeout 60s
+            dockerize -wait tcp://db:5432 -timeout 60s
 
       - run:
           name: Check database logs
@@ -68,7 +62,7 @@ jobs:
             cd api
             gem install bundler
             bundle install
-            dockerize -wait tcp://$DB_CONTAINER_IP:5432 -timeout 30s
+            dockerize -wait tcp://db:5432 -timeout 30s
             bundle exec rails db:create db:schema:load db:migrate
 
 workflows:
