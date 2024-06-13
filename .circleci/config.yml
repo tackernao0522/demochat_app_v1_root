@@ -30,8 +30,8 @@ jobs:
             cd ~/project/api
             gem install bundler
             bundle install
-            bundle exec rails db:drop
-            bundle exec rails db:create db:migrate
+            bundle exec rake db:create db:schema:load --trace
+            bundle exec rake db:migrate
 
 workflows:
   version: 2
