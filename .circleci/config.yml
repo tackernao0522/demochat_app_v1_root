@@ -10,8 +10,14 @@ jobs:
   build:
     executor: docker-executor
     steps:
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 20.10.7
       - checkout
+      - run:
+          name: Initialize and update submodules
+          command: |
+            git submodule init
+            git submodule update
       - run:
           name: Set up environment variables
           command: |
