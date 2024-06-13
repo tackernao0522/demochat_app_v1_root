@@ -20,13 +20,13 @@ services:
       context: ./api
       dockerfile: Dockerfile.dev
       args:
-        WORKDIR: $WORKDIR
+        WORKDIR: /app
     environment:
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD
       API_DOMAIN: "localhost:$FRONT_PORT"
     command: /bin/sh -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
-      - "./api:/$WORKDIR"
+      - "./api:/app"
     depends_on:
       - db
     ports:
@@ -38,11 +38,11 @@ services:
     build:
       context: ./front
       args:
-        WORKDIR: $WORKDIR
+        WORKDIR: /app
         API_URL: "http://localhost:$API_PORT"
     command: yarn run dev
     volumes:
-      - "./front:/$WORKDIR"
+      - "./front:/app"
     ports:
       - "$FRONT_PORT:3000"
     depends_on:
