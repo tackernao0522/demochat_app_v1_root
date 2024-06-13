@@ -21,7 +21,7 @@ jobs:
       - run:
           name: Start database
           command: |
-            docker-compose -f docker-compose.dev.yml up -d db
+            docker-compose -f docker-compose.dev.yml up -d
             sleep 60
             docker-compose -f docker-compose.dev.yml ps
       - run:
@@ -30,6 +30,7 @@ jobs:
             cd ~/project/api
             gem install bundler
             bundle install
+            docker-compose -f docker-compose.dev.yml run --rm api sh
             bundle exec rails db:create db:schema:load db:migrate
 
 workflows:
