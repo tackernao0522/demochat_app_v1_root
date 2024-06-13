@@ -1,40 +1,45 @@
 version: 2.1
 
-executors:
-  docker-executor:
-    docker:
-      - image: cimg/ruby:3.3.2
-    working_directory: ~/project
+orbs:
+  ruby: circleci/ruby@1.6
 
 jobs:
   build:
-    executor: docker-executor
+    docker:
+      - image: cimg/ruby:3.1
+      - image: circleci/postgres:15.1
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: app_test
     steps:
       - checkout
+
       - run:
-          name: Initialize and update submodules
+          name: Initialize Submodules
           command: |
-            git submodule sync --recursive
-            git submodule update --init --recursive
-      - setup_remote_docker:
-          version: 20.10.7
+            git submodule sync
+            git submodule update --init
+
+      - ruby/install-deps
+
       - run:
-          name: Start database
+          name: Setup Environment Variables
           command: |
-            docker-compose -f docker-compose.dev.yml up -d db
-            sleep 60
-            docker-compose -f docker-compose.dev.yml ps
+            echo 'export POSTGRES_PASSWORD=postgres' >> $BASH_ENV
+
       - run:
-          name: Install dependencies and set up database
+          name: Database setup
           command: |
-            cd ~/project/api
-            gem install bundler
-            bundle install
-            bundle exec rails db:create db:schema:load --trace
+            bundle exec rails db:create
+            bundle exec rails db:schema:load
             bundle exec rails db:migrate
+
+      - run:
+          name: Run tests
+          command: bundle exec rspec
 
 workflows:
   version: 2
-  build_and_test:
+  build:
     jobs:
       - build
