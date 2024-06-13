@@ -8,6 +8,10 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
+          name: Create .env.development file
+          command: |
+            echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" > .env.development
+      - run:
           name: Start Database
           command: |
             docker-compose -f docker-compose.dev.yml --env-file .env.development up -d db
