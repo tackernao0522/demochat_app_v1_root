@@ -7,13 +7,14 @@ executors:
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
-      - image: circleci/postgres:13.3
+    working_directory: ~/project
 
 jobs:
   build:
     executor: docker-executor
     steps:
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 20.10.7
       - checkout
       - run:
           name: Set up .env.development
