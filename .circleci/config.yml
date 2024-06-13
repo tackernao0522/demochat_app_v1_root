@@ -35,7 +35,7 @@ jobs:
           name: Start database
           command: |
             docker-compose -f docker-compose.dev.yml --env-file .env.development up -d db
-            sleep 60
+            sleep 10
             docker-compose -f docker-compose.dev.yml ps
 
       - run:
