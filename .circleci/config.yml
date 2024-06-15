@@ -5,7 +5,7 @@ executors:
     docker:
       - image: cimg/ruby:3.3.2
       - image: cimg/postgres:15.7
-    working_directory: ~/project
+    working_directory: ~/repos
 
 jobs:
   build:
