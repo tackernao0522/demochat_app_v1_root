@@ -17,8 +17,7 @@ jobs:
           command: |
             git submodule sync --recursive
             git submodule update --init --recursive
-      - setup_remote_docker:
-          version: 20.10.7
+      - setup_remote_docker
       - run:
           name: Clean up environment
           command: |
