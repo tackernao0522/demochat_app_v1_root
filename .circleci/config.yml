@@ -19,21 +19,26 @@ jobs:
             git submodule update --init --recursive
       - setup_remote_docker
       - run:
-          name: Clean up environment
+          name: Clear Cache
           command: |
-            echo "Cleaning up unused Docker networks..."
-            docker network prune -f
+            # キャッシュディレクトリを削除するコマンド
+            rm -rf ~/.bundle/cache
+            rm -rf ~/.cache
+            rm -rf ~/.yarn-cache
+            rm -rf /tmp/cache
       - run:
-          name: Stop and remove containers
+          name: Remove existing containers
           command: |
-            echo "Stopping and removing Docker containers..."
-            docker-compose -f docker-compose.dev.yml down -v
+            docker-compose -f docker-compose.dev.yml down
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "Gemfile.lock" }}
+            - v1-dependencies-
       - run:
-          name: Start services
+          name: Start database
           command: |
-            echo "Starting Docker services..."
-            docker-compose -f docker-compose.dev.yml up -d
-            # sleep 60  # 必要に応じて待機時間を調整
+            docker-compose -f docker-compose.dev.yml up -d db
+            sleep 60
             docker-compose -f docker-compose.dev.yml ps
       - run:
           name: Install dependencies and set up database
@@ -41,9 +46,11 @@ jobs:
             cd ~/project/api
             gem install bundler
             bundle install
-            bundle exec rails db:drop || true
-            bundle exec rails db:create
-            bundle exec rails db:migrate
+            bundle exec rails db:create db:schema:load db:migrate
+      - save_cache:
+          paths:
+            - vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
 
 workflows:
   version: 2
