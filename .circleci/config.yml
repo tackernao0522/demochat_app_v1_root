@@ -45,7 +45,7 @@ jobs:
             gem install bundler
             bundle install
             bundle exec rails db:drop || true
-            bin/rails db:create
+            bundle exec rails db:create
             bundle exec rails db:migrate
 
 workflows:
