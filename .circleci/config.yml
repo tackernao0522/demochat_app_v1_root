@@ -17,28 +17,24 @@ jobs:
           command: |
             git submodule sync --recursive
             git submodule update --init --recursive
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 20.10.7
       - run:
-          name: Clear Cache
+          name: Clean up environment
           command: |
-            # キャッシュディレクトリを削除するコマンド
-            rm -rf ~/.bundle/cache
-            rm -rf ~/.cache
-            rm -rf ~/.yarn-cache
-            rm -rf /tmp/cache
+            echo "Cleaning up unused Docker networks..."
+            docker network prune -f
       - run:
-          name: Remove existing containers
+          name: Stop and remove containers
           command: |
-            docker-compose -f docker-compose.dev.yml down
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "Gemfile.lock" }}
-            - v1-dependencies-
+            echo "Stopping and removing Docker containers..."
+            docker-compose -f docker-compose.dev.yml down -v
       - run:
-          name: Start database
+          name: Start services
           command: |
-            docker-compose -f docker-compose.dev.yml up -d db
-            sleep 60
+            echo "Starting Docker services..."
+            docker-compose -f docker-compose.dev.yml up -d
+            # sleep 60  # 必要に応じて待機時間を調整
             docker-compose -f docker-compose.dev.yml ps
       - run:
           name: Install dependencies and set up database
@@ -46,11 +42,9 @@ jobs:
             cd ~/project/api
             gem install bundler
             bundle install
-            bundle exec rails db:create db:schema:load db:migrate
-      - save_cache:
-          paths:
-            - vendor/bundle
-          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+            bundle exec rails db:drop || true
+            bundle exec rails db:create
+            bundle exec rails db:migrate
 
 workflows:
   version: 2
