@@ -33,8 +33,11 @@ jobs:
           command: |
             echo "Starting Docker services..."
             docker-compose -f docker-compose.dev.yml up -d
-            # sleep 60  # 必要に応じて待機時間を調整
             docker-compose -f docker-compose.dev.yml ps
+      - run:
+          name: Set database host for Rails API
+          command: |
+            sed -i 's/host: db/host: localhost/' ~/project/api/config/database.yml
       - run:
           name: Install dependencies and set up database
           command: |
