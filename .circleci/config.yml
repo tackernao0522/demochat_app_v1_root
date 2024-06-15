@@ -20,6 +20,22 @@ jobs:
       - setup_remote_docker:
           version: 20.10.7
       - run:
+          name: Clear Cache
+          command: |
+            # キャッシュディレクトリを削除するコマンド
+            rm -rf ~/.bundle/cache
+            rm -rf ~/.cache
+            rm -rf ~/.yarn-cache
+            rm -rf /tmp/cache
+      - run:
+          name: Remove existing containers
+          command: |
+            docker-compose -f docker-compose.dev.yml down
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "Gemfile.lock" }}
+            - v1-dependencies-
+      - run:
           name: Start database
           command: |
             docker-compose -f docker-compose.dev.yml up -d db
@@ -32,6 +48,10 @@ jobs:
             gem install bundler
             bundle install
             bundle exec rails db:create db:schema:load db:migrate
+      - save_cache:
+          paths:
+            - vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
 
 workflows:
   version: 2
