@@ -5,15 +5,13 @@ executors:
     docker:
       - image: cimg/ruby:3.3.2
       - image: cimg/postgres:15.7
+    working_directory: ~/project
 
 jobs:
   build:
     executor: docker-executor
     steps:
       - checkout
-      - run:
-          name: Change permissions
-          command: sudo chmod -R 777 /home/circleci/project
       - run:
           name: Initialize and update submodules
           command: |
@@ -35,14 +33,12 @@ jobs:
           command: |
             echo "Starting Docker services..."
             docker-compose -f docker-compose.dev.yml up -d
+            # sleep 60  # 必要に応じて待機時間を調整
             docker-compose -f docker-compose.dev.yml ps
-      - run:
-          name: Change permissions
-          command: sudo chmod -R 777 /home/circleci/project
       - run:
           name: Install dependencies and set up database
           command: |
-            cd /home/circleci/project/api
+            cd ~/project/api
             gem install bundler
             bundle install
             bundle exec rails db:drop || true
