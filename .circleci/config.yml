@@ -4,7 +4,7 @@ executors:
   docker-executor:
     docker:
       - image: cimg/ruby:3.3.2
-      # - image: cimg/postgres:15.7
+      - image: cimg/postgres:15.7
     working_directory: ~/project
 
 jobs:
@@ -22,21 +22,27 @@ jobs:
       - run:
           name: Clean up environment
           command: |
+            echo "Cleaning up unused Docker networks..."
             docker network prune -f
+      - run:
+          name: Stop and remove containers
+          command: |
+            echo "Stopping and removing Docker containers..."
             docker-compose -f docker-compose.dev.yml down -v
       - run:
           name: Start services
           command: |
+            echo "Starting Docker services..."
             docker-compose -f docker-compose.dev.yml up -d
             sleep 60  # 必要に応じて待機時間を調整
-            docker-compose -f docker-compose.dev.yml ps  # サービスの状態を確認
+            docker-compose -f docker-compose.dev.yml ps
       - run:
           name: Install dependencies and set up database
           command: |
             cd ~/project/api
             gem install bundler
             bundle install
-            bundle exec rails db:drop || true  # db:dropは失敗しても継続するように設定
+            bundle exec rails db:drop || true
             bundle exec rails db:create
             bundle exec rails db:migrate
 
