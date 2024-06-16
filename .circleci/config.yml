@@ -43,6 +43,7 @@ jobs:
           root: ~/project
           paths:
             - api/config/credentials.yml.enc
+            - api/config/master.key
       - run:
           name: Decrypt credentials
           command: |
