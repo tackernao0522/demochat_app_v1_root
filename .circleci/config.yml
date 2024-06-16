@@ -35,9 +35,30 @@ jobs:
             docker-compose -f docker-compose.dev.yml up -d
             docker-compose -f docker-compose.dev.yml ps
       - run:
-          name: Set database host for Rails API (CircleCI)
+          name: Set database host and name for Rails API (CircleCI)
           command: |
             sed -i 's/host: db/host: localhost/' ~/project/api/config/database.yml
+            sed -i 's/app_development/circleci_development/' ~/project/api/config/database.yml
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - api/config/credentials.yml.enc
+            - api/config/master.key
+      - run:
+          name: Decrypt credentials
+          command: |
+            cd ~/project/api
+            bin/rails credentials:show
+      - run:
+          name: Disable bundler cache
+          command: |
+            cd ~/project/api
+            bundle cache --clear --all
+      - run:
+          name: Remove Gemfile.lock
+          command: |
+            cd ~/project/api
+            rm Gemfile.lock
       - run:
           name: Install dependencies and set up database
           command: |
@@ -46,7 +67,7 @@ jobs:
             bundle install
             bundle exec rails db:drop || true
             bundle exec rails db:create
-            bundle exec rails db:migrate
+            bundle exec rails db:migrate RAILS_ENV=circleci_development
 
 workflows:
   version: 2
