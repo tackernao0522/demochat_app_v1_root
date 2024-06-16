@@ -50,6 +50,16 @@ jobs:
             cd ~/project/api
             bin/rails credentials:show
       - run:
+          name: Disable bundler cache
+          command: |
+            cd ~/project/api
+            bundle cache --clear --all
+      - run:
+          name: Remove Gemfile.lock
+          command: |
+            cd ~/project/api
+            rm Gemfile.lock
+      - run:
           name: Install dependencies and set up database
           command: |
             cd ~/project/api
