@@ -44,11 +44,15 @@ jobs:
           command: |
             docker-compose -f docker-compose.dev.yml exec -T db bash -c "until pg_isready -h localhost -U postgres; do sleep 1; done"
       - run:
-          name: Install dependencies and set up database
+          name: Install dependencies
           command: |
             cd ~/project/api
             gem install bundler
             bundle install
+      - run:
+          name: Set up database
+          command: |
+            cd ~/project/api
             bundle exec rails db:drop || true
             bundle exec rails db:create
             bundle exec rails db:migrate
