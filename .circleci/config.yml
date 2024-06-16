@@ -13,9 +13,9 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "YOUR_SSH_KEY_FINGERPRINT_FOR_ROOT"
-            - "YOUR_SSH_KEY_FINGERPRINT_FOR_API"
-            - "YOUR_SSH_KEY_FINGERPRINT_FOR_FRONT"
+            - "9La0keetW93Pwz2xoEoQ4BmsNJzVtAQvyg0dRu0HWn8"
+            - "R1DdhVKI7FUfejs7qy9Ag5Imdt8dMJcp0AgeKGm7rz4"
+            - "Vh5iZGhN3QBhhzwIrropmYKosWotv0fdz4iWSzwaWR0"
       - checkout
       - run:
           name: Initialize and update submodules
