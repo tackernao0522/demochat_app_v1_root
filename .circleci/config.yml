@@ -13,9 +13,9 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "9La0keetW93Pwz2xoEoQ4BmsNJzVtAQvyg0dRu0HWn8"
-            - "R1DdhVKI7FUfejs7qy9Ag5Imdt8dMJcp0AgeKGm7rz4"
-            - "Vh5iZGhN3QBhhzwIrropmYKosWotv0fdz4iWSzwaWR0"
+            - "SHA256:9La0keetW93Pwz2xoEoQ4BmsNJzVtAQvyg0dRu0HWn8"
+            - "SHA256:R1DdhVKI7FUfejs7qy9Ag5Imdt8dMJcp0AgeKGm7rz4"
+            - "SHA256:Vh5iZGhN3QBhhzwIrropmYKosWotv0fdz4iWSzwaWR0"
       - checkout
       - run:
           name: Initialize and update submodules
