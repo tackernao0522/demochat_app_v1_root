@@ -38,6 +38,11 @@ jobs:
           name: Set database host for Rails API (CircleCI)
           command: |
             sed -i 's/host: db/host: localhost/' ~/project/api/config/database.yml
+            cat ~/project/api/config/database.yml
+      - run:
+          name: Wait for PostgreSQL to be ready
+          command: |
+            docker-compose -f docker-compose.dev.yml exec -T db bash -c "until pg_isready -h localhost -U postgres; do sleep 1; done"
       - run:
           name: Install dependencies and set up database
           command: |
