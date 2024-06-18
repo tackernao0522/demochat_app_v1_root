@@ -18,6 +18,7 @@
                      auth_validate_token GET    /auth/validate_token(.:format)                                                                    devise_token_auth/token_validations#validate_token
                                    likes POST   /messages/:id/likes(.:format)                                                                     likes#create
                                 messages GET    /messages(.:format)                                                                               messages#index
+                                    like DELETE /likes/:id(.:format)                                                                              likes#destroy
                        your_api_endpoint GET    /your_api_endpoint(.:format)                                                                      api#your_action
            rails_postmark_inbound_emails POST   /rails/action_mailbox/postmark/inbound_emails(.:format)                                           action_mailbox/ingresses/postmark/inbound_emails#create
               rails_relay_inbound_emails POST   /rails/action_mailbox/relay/inbound_emails(.:format)                                              action_mailbox/ingresses/relay/inbound_emails#create
