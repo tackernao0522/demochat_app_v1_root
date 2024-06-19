@@ -55,10 +55,52 @@ jobs:
             cd ~/project/api
             bundle exec rails db:drop || true
             bundle exec rails db:create
+            bundle exec rails db:schema:load  # スキーマをロードするコマンドを追加
             bundle exec rails db:migrate
+      - run:
+          name: Run RSpec tests
+          command: |
+            cd ~/project/api
+            bundle exec rspec
+
+  deploy:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - run:
+          name: Initialize and update submodules
+          command: |
+            git submodule sync --recursive
+            git submodule update --init --recursive
+      - run:
+          name: Install Flyctl
+          command: |
+            curl -L https://fly.io/install.sh | sh
+            export FLYCTL_INSTALL="/home/circleci/.fly"
+            export PATH="$FLYCTL_INSTALL/bin:$PATH"
+            echo 'export FLYCTL_INSTALL="/home/circleci/.fly"' >> $BASH_ENV
+            echo 'export PATH="$FLYCTL_INSTALL/bin:$PATH"' >> $BASH_ENV
+      - run:
+          name: Verify Flyctl Installation
+          command: |
+            source $BASH_ENV
+            which flyctl
+            flyctl version
+      - run:
+          name: Deploy to Fly.io
+          command: |
+            source $BASH_ENV
+            export FLY_API_TOKEN=${FLY_API_TOKEN}
+            cd ~/project
+            ls -la
+            flyctl deploy --config ./fly.toml -a demochat-api
 
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
+      - deploy:
+          requires:
+            - build
