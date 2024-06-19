@@ -32,7 +32,7 @@ services:
     command: /bin/sh -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     depends_on:
       db:
-        condition: service_healthy # PostgreSQLが正常に起動するまで待機
+        condition: service_healthy
     ports:
       - "${API_PORT}:3000"
     networks:
@@ -44,11 +44,13 @@ services:
       args:
         WORKDIR: $WORKDIR
         API_URL: "http://localhost:${API_PORT}"
-    command: yarn run dev
+    command: yarn dev
+    environment:
+      NUXT_PORT: ${FRONT_PORT}
     volumes:
       - "./front:/$WORKDIR"
     ports:
-      - "${FRONT_PORT}:3000"
+      - "${FRONT_PORT}:8080"
     depends_on:
       - api
     networks:
