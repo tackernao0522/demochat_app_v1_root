@@ -37,7 +37,7 @@ jobs:
       - run:
           name: Set database host for Rails API (CircleCI)
           command: |
-            sed -i 's/host: db/host: localhost/' ~/project/api/config/database.yml
+            sed -I 's/host: db/host: localhost/' ~/project/api/config/database.yml
             cat ~/project/api/config/database.yml
       - run:
           name: Wait for PostgreSQL to be ready
@@ -96,11 +96,33 @@ jobs:
             ls -la
             flyctl deploy --config ./fly.toml -a demochat-api
 
+  deploy_frontend:
+    docker:
+      - image: cimg/node:current
+    steps:
+      - checkout
+      - run:
+          name: Initialize and update submodules
+          command: |
+            git submodule sync --recursive
+            git submodule update --init --recursive
+      - run:
+          name: Install Vercel CLI
+          command: |
+            npm install -g vercel
+      - run:
+          name: Deploy to Vercel
+          command: |
+            vercel --token $VERCEL_TOKEN --prod --confirm --cwd ./front
+
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
       - deploy:
+          requires:
+            - build
+      - deploy_frontend:
           requires:
             - build
