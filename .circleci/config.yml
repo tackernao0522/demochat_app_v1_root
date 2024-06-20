@@ -98,7 +98,7 @@ jobs:
             export FLYCTL_INSTALL="/home/circleci/.fly"
             export PATH="$FLYCTL_INSTALL/bin:$PATH"
             echo 'export FLYCTL_INSTALL="/home/circleci/.fly"' >> $BASH_ENV
-            echo 'export PATH="$FLYCTL_INSTALL/bin/$PATH"' >> $BASH_ENV
+            echo 'export PATH="$FLYCTL_INSTALL/bin:$PATH"' >> $BASH_ENV
       - run:
           name: Reload environment variables
           command: |
@@ -106,7 +106,7 @@ jobs:
       - run:
           name: Verify Flyctl Installation
           command: |
-            which flyctl
+            echo "Flyctl path: $(which flyctl)"
             flyctl version
       - run:
           name: Deploy to Fly.io
