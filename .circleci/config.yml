@@ -78,6 +78,8 @@ jobs:
           command: |
             echo "Checking for changes in API..."
             git diff HEAD^ HEAD api || true
+            echo "Diff output:"
+            git diff HEAD^ HEAD api
             if git diff --quiet HEAD^ HEAD api; then
               echo "No changes in API code, skipping deploy"
               echo "export SKIP_API_DEPLOY=true" >> $BASH_ENV
@@ -96,19 +98,19 @@ jobs:
             export FLYCTL_INSTALL="/home/circleci/.fly"
             export PATH="$FLYCTL_INSTALL/bin:$PATH"
             echo 'export FLYCTL_INSTALL="/home/circleci/.fly"' >> $BASH_ENV
-            echo 'export PATH="$FLYCTL_INSTALL/bin:$PATH"' >> $BASH_ENV
+            echo 'export PATH="$FLYCTL_INSTALL/bin/$PATH"' >> $BASH_ENV
       - run:
           name: Verify Flyctl Installation
           command: |
             source $BASH_ENV
-            export PATH="$FLYCTL_INSTALL/bin:$PATH"
+            export PATH="$FLYCTL_INSTALL/bin/$PATH"
             which flyctl
             flyctl version
       - run:
           name: Deploy to Fly.io
           command: |
             source $BASH_ENV
-            export PATH="$FLYCTL_INSTALL/bin:$PATH"
+            export PATH="$FLYCTL_INSTALL/bin/$PATH"
             echo "SKIP_API_DEPLOY is $SKIP_API_DEPLOY"
             if [ "$SKIP_API_DEPLOY" != "true" ]; then
               export FLY_API_TOKEN=${FLY_API_TOKEN}
@@ -134,6 +136,8 @@ jobs:
           command: |
             echo "Checking for changes in frontend..."
             git diff HEAD^ HEAD front || true
+            echo "Diff output:"
+            git diff HEAD^ HEAD front
             if git diff --quiet HEAD^ HEAD front; then
               echo "No changes in frontend code, skipping deploy"
               echo "export SKIP_FRONTEND_DEPLOY=true" >> $BASH_ENV
