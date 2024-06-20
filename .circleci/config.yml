@@ -96,17 +96,19 @@ jobs:
             export FLYCTL_INSTALL="/home/circleci/.fly"
             export PATH="$FLYCTL_INSTALL/bin:$PATH"
             echo 'export FLYCTL_INSTALL="/home/circleci/.fly"' >> $BASH_ENV
-            echo 'export PATH="$FLYCTL_INSTALL/bin/$PATH"' >> $BASH_ENV
+            echo 'export PATH="$FLYCTL_INSTALL/bin:$PATH"' >> $BASH_ENV
       - run:
           name: Verify Flyctl Installation
           command: |
             source $BASH_ENV
+            export PATH="$FLYCTL_INSTALL/bin:$PATH"
             which flyctl
             flyctl version
       - run:
           name: Deploy to Fly.io
           command: |
             source $BASH_ENV
+            export PATH="$FLYCTL_INSTALL/bin:$PATH"
             echo "SKIP_API_DEPLOY is $SKIP_API_DEPLOY"
             if [ "$SKIP_API_DEPLOY" != "true" ]; then
               export FLY_API_TOKEN=${FLY_API_TOKEN}
