@@ -74,6 +74,24 @@ jobs:
             git submodule sync --recursive
             git submodule update --init --recursive
       - run:
+          name: Check for API changes
+          command: |
+            echo "Checking for changes in API..."
+            git diff HEAD^ HEAD api || true
+            echo "Diff output:"
+            git diff HEAD^ HEAD api
+            if git diff --quiet HEAD^ HEAD api; then
+              echo "No changes in API code, skipping deploy"
+              echo "export SKIP_API_DEPLOY=true" >> $BASH_ENV
+            else
+              echo "API code changed, will deploy"
+              echo "export SKIP_API_DEPLOY=false" >> $BASH_ENV
+            fi
+      - run:
+          name: Show BASH_ENV
+          command: |
+            cat $BASH_ENV
+      - run:
           name: Install Flyctl
           command: |
             curl -L https://fly.io/install.sh | sh
@@ -82,19 +100,70 @@ jobs:
             echo 'export FLYCTL_INSTALL="/home/circleci/.fly"' >> $BASH_ENV
             echo 'export PATH="$FLYCTL_INSTALL/bin:$PATH"' >> $BASH_ENV
       - run:
-          name: Verify Flyctl Installation
+          name: Reload environment variables
           command: |
             source $BASH_ENV
-            which flyctl
+      - run:
+          name: Verify Flyctl Installation
+          command: |
+            echo "Flyctl path: $(which flyctl)"
             flyctl version
       - run:
           name: Deploy to Fly.io
           command: |
             source $BASH_ENV
-            export FLY_API_TOKEN=${FLY_API_TOKEN}
-            cd ~/project
-            ls -la
-            flyctl deploy --config ./fly.toml -a demochat-api
+            echo "SKIP_API_DEPLOY is $SKIP_API_DEPLOY"
+            if [ "$SKIP_API_DEPLOY" != "true" ]; then
+              export FLY_API_TOKEN=${FLY_API_TOKEN}
+              cd ~/project
+              ls -la
+              flyctl deploy --config ./fly.toml -a demochat-api
+            else
+              echo "Skipping API deploy"
+            fi
+
+  deploy_frontend:
+    docker:
+      - image: cimg/node:current
+    steps:
+      - checkout
+      - run:
+          name: Initialize and update submodules
+          command: |
+            git submodule sync --recursive
+            git submodule update --init --recursive
+      - run:
+          name: Check for frontend changes
+          command: |
+            echo "Checking for changes in frontend..."
+            git diff HEAD^ HEAD front || true
+            echo "Diff output:"
+            git diff HEAD^ HEAD front
+            if git diff --quiet HEAD^ HEAD front; then
+              echo "No changes in frontend code, skipping deploy"
+              echo "export SKIP_FRONTEND_DEPLOY=true" >> $BASH_ENV
+            else
+              echo "Frontend code changed, will deploy"
+              echo "export SKIP_FRONTEND_DEPLOY=false" >> $BASH_ENV
+            fi
+      - run:
+          name: Show BASH_ENV
+          command: |
+            cat $BASH_ENV
+      - run:
+          name: Install Vercel CLI
+          command: |
+            sudo yarn global add vercel
+      - run:
+          name: Deploy to Vercel
+          command: |
+            source $BASH_ENV
+            echo "SKIP_FRONTEND_DEPLOY is $SKIP_FRONTEND_DEPLOY"
+            if [ "$SKIP_FRONTEND_DEPLOY" != "true" ]; then
+              vercel --token $VERCEL_TOKEN --prod --yes --cwd ./front
+            else
+              echo "Skipping frontend deploy"
+            fi
 
 workflows:
   version: 2
@@ -102,5 +171,8 @@ workflows:
     jobs:
       - build
       - deploy:
+          requires:
+            - build
+      - deploy_frontend:
           requires:
             - build
