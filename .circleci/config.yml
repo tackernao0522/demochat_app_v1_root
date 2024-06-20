@@ -74,27 +74,42 @@ jobs:
             git submodule sync --recursive
             git submodule update --init --recursive
       - run:
-          name: Install Flyctl
+          name: Check for API changes and deploy if needed
           command: |
-            curl -L https://fly.io/install.sh | sh
-            export FLYCTL_INSTALL="/home/circleci/.fly"
-            export PATH="$FLYCTL_INSTALL/bin:$PATH"
-            echo 'export FLYCTL_INSTALL="/home/circleci/.fly"' >> $BASH_ENV
-            echo 'export PATH="$FLYCTL_INSTALL/bin:$PATH"' >> $BASH_ENV
-      - run:
-          name: Verify Flyctl Installation
-          command: |
-            source $BASH_ENV
-            which flyctl
-            flyctl version
-      - run:
-          name: Deploy to Fly.io
-          command: |
-            source $BASH_ENV
-            export FLY_API_TOKEN=${FLY_API_TOKEN}
-            cd ~/project
-            ls -la
-            flyctl deploy --config ./fly.toml -a demochat-api
+            if git diff --quiet HEAD^ HEAD api; then
+              echo "No changes in API code, skipping deploy"
+              echo "export SKIP_API_DEPLOY=true" >> $BASH_ENV
+            else
+              echo "API code changed, will deploy"
+              echo "export SKIP_API_DEPLOY=false" >> $BASH_ENV
+            fi
+      - when:
+          condition:
+            not:
+              equal: [true, << pipeline.parameters.SKIP_API_DEPLOY >>]
+          steps:
+            - run:
+                name: Install Flyctl
+                command: |
+                  curl -L https://fly.io/install.sh | sh
+                  export FLYCTL_INSTALL="/home/circleci/.fly"
+                  export PATH="$FLYCTL_INSTALL/bin:$PATH"
+                  echo 'export FLYCTL_INSTALL="/home/circleci/.fly"' >> $BASH_ENV
+                  echo 'export PATH="$FLYCTL_INSTALL/bin:$PATH"' >> $BASH_ENV
+            - run:
+                name: Verify Flyctl Installation
+                command: |
+                  source $BASH_ENV
+                  which flyctl
+                  flyctl version
+            - run:
+                name: Deploy to Fly.io
+                command: |
+                  source $BASH_ENV
+                  export FLY_API_TOKEN=${FLY_API_TOKEN}
+                  cd ~/project
+                  ls -la
+                  flyctl deploy --config ./fly.toml -a demochat-api
 
   deploy_frontend:
     docker:
@@ -107,13 +122,15 @@ jobs:
             git submodule sync --recursive
             git submodule update --init --recursive
       - run:
-          name: Install Vercel CLI
+          name: Check for frontend changes and deploy if needed
           command: |
-            sudo yarn global add vercel
-      - run:
-          name: Deploy to Vercel
-          command: |
-            vercel --token $VERCEL_TOKEN --prod --confirm --cwd ./front
+            if git diff --quiet HEAD^ HEAD front; then
+              echo "No changes in frontend code, skipping deploy"
+            else
+              echo "Frontend code changed, will deploy"
+              sudo yarn global add vercel
+              vercel --token $VERCEL_TOKEN --prod --confirm --cwd ./front
+            fi
 
 workflows:
   version: 2
