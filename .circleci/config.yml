@@ -40,7 +40,7 @@ jobs:
             sed -i 's/host: db/host: localhost/' ~/project/api/config/database.yml
             cat ~/project/api/config/database.yml
       - run:
-          name: Wait for PostgreSQL
+          name: Wait for PostgreSQL to be ready
           command: |
             docker-compose -f docker-compose.dev.yml exec -T db bash -c "until pg_isready -h localhost -U postgres; do sleep 1; done"
       - run:
@@ -76,6 +76,7 @@ jobs:
       - run:
           name: Check for API changes
           command: |
+            echo "Checking for changes in API..."
             git diff HEAD^ HEAD api || true
             if git diff --quiet HEAD^ HEAD api; then
               echo "No changes in API code, skipping deploy"
@@ -84,6 +85,10 @@ jobs:
               echo "API code changed, will deploy"
               echo "export SKIP_API_DEPLOY=false" >> $BASH_ENV
             fi
+      - run:
+          name: Show BASH_ENV
+          command: |
+            cat $BASH_ENV
       - run:
           name: Install Flyctl
           command: |
@@ -125,6 +130,7 @@ jobs:
       - run:
           name: Check for frontend changes
           command: |
+            echo "Checking for changes in frontend..."
             git diff HEAD^ HEAD front || true
             if git diff --quiet HEAD^ HEAD front; then
               echo "No changes in frontend code, skipping deploy"
@@ -133,6 +139,10 @@ jobs:
               echo "Frontend code changed, will deploy"
               echo "export SKIP_FRONTEND_DEPLOY=false" >> $BASH_ENV
             fi
+      - run:
+          name: Show BASH_ENV
+          command: |
+            cat $BASH_ENV
       - run:
           name: Install Vercel CLI
           command: |
