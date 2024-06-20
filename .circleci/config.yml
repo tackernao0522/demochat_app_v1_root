@@ -40,7 +40,7 @@ jobs:
             sed -i 's/host: db/host: localhost/' ~/project/api/config/database.yml
             cat ~/project/api/config/database.yml
       - run:
-          name: Wait for PostgreSQL to be ready
+          name: Wait for PostgreSQL
           command: |
             docker-compose -f docker-compose.dev.yml exec -T db bash -c "until pg_isready -h localhost -U postgres; do sleep 1; done"
       - run:
@@ -76,6 +76,7 @@ jobs:
       - run:
           name: Check for API changes
           command: |
+            git diff HEAD^ HEAD api || true
             if git diff --quiet HEAD^ HEAD api; then
               echo "No changes in API code, skipping deploy"
               echo "export SKIP_API_DEPLOY=true" >> $BASH_ENV
@@ -90,7 +91,7 @@ jobs:
             export FLYCTL_INSTALL="/home/circleci/.fly"
             export PATH="$FLYCTL_INSTALL/bin:$PATH"
             echo 'export FLYCTL_INSTALL="/home/circleci/.fly"' >> $BASH_ENV
-            echo 'export PATH="$FLYCTL_INSTALL/bin:$PATH"' >> $BASH_ENV
+            echo 'export PATH="$FLYCTL_INSTALL/bin/$PATH"' >> $BASH_ENV
       - run:
           name: Verify Flyctl Installation
           command: |
@@ -124,6 +125,7 @@ jobs:
       - run:
           name: Check for frontend changes
           command: |
+            git diff HEAD^ HEAD front || true
             if git diff --quiet HEAD^ HEAD front; then
               echo "No changes in frontend code, skipping deploy"
               echo "export SKIP_FRONTEND_DEPLOY=true" >> $BASH_ENV
