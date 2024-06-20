@@ -37,7 +37,7 @@ jobs:
       - run:
           name: Set database host for Rails API (CircleCI)
           command: |
-            sed -I 's/host: db/host: localhost/' ~/project/api/config/database.yml
+            sed -i 's/host: db/host: localhost/' ~/project/api/config/database.yml
             cat ~/project/api/config/database.yml
       - run:
           name: Wait for PostgreSQL to be ready
