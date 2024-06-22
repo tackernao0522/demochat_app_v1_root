@@ -55,7 +55,7 @@ jobs:
             cd ~/project/api
             bundle exec rails db:drop || true
             bundle exec rails db:create
-            bundle exec rails db:schema:load  # スキーマをロードするコマンドを追加
+            bundle exec rails db:schema:load
             bundle exec rails db:migrate
       - run:
           name: Run RSpec tests
@@ -74,7 +74,7 @@ jobs:
             git submodule sync --recursive
             git submodule update --init --recursive
       - run:
-          name: Check for API changes
+          name: Check for API changes and test results
           command: |
             echo "Checking for changes in API..."
             git diff HEAD^ HEAD api || true
@@ -84,8 +84,19 @@ jobs:
               echo "No changes in API code, skipping deploy"
               echo "export SKIP_API_DEPLOY=true" >> $BASH_ENV
             else
-              echo "API code changed, will deploy"
+              echo "API code changed, will deploy if tests passed"
               echo "export SKIP_API_DEPLOY=false" >> $BASH_ENV
+            fi
+
+            # Check if the previous job (test) was successful
+            if [ "${CIRCLE_PREVIOUS_BUILD_NUM}" != "" ]; then
+              url="https://circleci.com/api/v1.1/project/github/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_PREVIOUS_BUILD_NUM}"
+              build_info=$(curl -s -u ${CIRCLE_TOKEN}: $url)
+              build_status=$(echo $build_info | jq -r '.status')
+              if [ "$build_status" != "success" ]; then
+                echo "Previous build (tests) failed. Aborting deploy."
+                echo "export SKIP_API_DEPLOY=true" >> $BASH_ENV
+              fi
             fi
       - run:
           name: Show BASH_ENV
@@ -165,14 +176,40 @@ jobs:
               echo "Skipping frontend deploy"
             fi
 
+  test_frontend:
+    docker:
+      - image: cimg/node:current
+    steps:
+      - checkout
+      - run:
+          name: Initialize and update submodules
+          command: |
+            git submodule sync --recursive
+            git submodule update --init --recursive
+      - run:
+          name: Install dependencies
+          command: |
+            cd ~/project/front
+            yarn install
+      - run:
+          name: Run Vitest tests
+          command: |
+            cd ~/project/front
+            yarn test
+
 workflows:
   version: 2
-  build_and_test:
+  build_test_and_deploy:
     jobs:
       - build
+      - test_frontend:
+          requires:
+            - build
       - deploy:
           requires:
             - build
+            - test_frontend
       - deploy_frontend:
           requires:
             - build
+            - test_frontend
