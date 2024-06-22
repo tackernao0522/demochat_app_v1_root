@@ -44,7 +44,7 @@ jobs:
           command: |
             docker-compose -f docker-compose.dev.yml exec -T db bash -c "until pg_isready -h localhost -U postgres; do sleep 1; done"
       - run:
-          name: Install dependencies
+          name: Install API dependencies
           command: |
             cd ~/project/api
             gem install bundler
@@ -58,10 +58,20 @@ jobs:
             bundle exec rails db:schema:load  # スキーマをロードするコマンドを追加
             bundle exec rails db:migrate
       - run:
-          name: Run RSpec tests
+          name: Run API tests
           command: |
             cd ~/project/api
             bundle exec rspec
+      - run:
+          name: Install frontend dependencies
+          command: |
+            cd ~/project/front
+            yarn install
+      - run:
+          name: Run frontend tests
+          command: |
+            cd ~/project/front
+            yarn test --run
 
   deploy:
     docker:
