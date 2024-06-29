@@ -1,8 +1,5 @@
                                   Prefix Verb   URI Pattern                                                                                       Controller#Action
-<<<<<<< HEAD
-=======
                                     root GET    /                                                                                                 welcome#index
->>>>>>> main
                         new_user_session GET    /auth/sign_in(.:format)                                                                           devise_token_auth/sessions#new
                             user_session POST   /auth/sign_in(.:format)                                                                           devise_token_auth/sessions#create
                     destroy_user_session DELETE /auth/sign_out(.:format)                                                                          devise_token_auth/sessions#destroy
@@ -19,13 +16,10 @@
                                          DELETE /auth(.:format)                                                                                   auth/registrations#destroy
                                          POST   /auth(.:format)                                                                                   auth/registrations#create
                      auth_validate_token GET    /auth/validate_token(.:format)                                                                    devise_token_auth/token_validations#validate_token
-<<<<<<< HEAD
-=======
                                    likes POST   /messages/:id/likes(.:format)                                                                     likes#create
                                 messages GET    /messages(.:format)                                                                               messages#index
                                     like DELETE /likes/:id(.:format)                                                                              likes#destroy
                        your_api_endpoint GET    /your_api_endpoint(.:format)                                                                      api#your_action
->>>>>>> main
            rails_postmark_inbound_emails POST   /rails/action_mailbox/postmark/inbound_emails(.:format)                                           action_mailbox/ingresses/postmark/inbound_emails#create
               rails_relay_inbound_emails POST   /rails/action_mailbox/relay/inbound_emails(.:format)                                              action_mailbox/ingresses/relay/inbound_emails#create
            rails_sendgrid_inbound_emails POST   /rails/action_mailbox/sendgrid/inbound_emails(.:format)                                           action_mailbox/ingresses/sendgrid/inbound_emails#create
@@ -34,11 +28,8 @@
             rails_mailgun_inbound_emails POST   /rails/action_mailbox/mailgun/inbound_emails/mime(.:format)                                       action_mailbox/ingresses/mailgun/inbound_emails#create
           rails_conductor_inbound_emails GET    /rails/conductor/action_mailbox/inbound_emails(.:format)                                          rails/conductor/action_mailbox/inbound_emails#index
                                          POST   /rails/conductor/action_mailbox/inbound_emails(.:format)                                          rails/conductor/action_mailbox/inbound_emails#create
-<<<<<<< HEAD
-=======
        new_rails_conductor_inbound_email GET    /rails/conductor/action_mailbox/inbound_emails/new(.:format)                                      rails/conductor/action_mailbox/inbound_emails#new
       edit_rails_conductor_inbound_email GET    /rails/conductor/action_mailbox/inbound_emails/:id/edit(.:format)                                 rails/conductor/action_mailbox/inbound_emails#edit
->>>>>>> main
            rails_conductor_inbound_email GET    /rails/conductor/action_mailbox/inbound_emails/:id(.:format)                                      rails/conductor/action_mailbox/inbound_emails#show
                                          PATCH  /rails/conductor/action_mailbox/inbound_emails/:id(.:format)                                      rails/conductor/action_mailbox/inbound_emails#update
                                          PUT    /rails/conductor/action_mailbox/inbound_emails/:id(.:format)                                      rails/conductor/action_mailbox/inbound_emails#update
