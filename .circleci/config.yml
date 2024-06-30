@@ -162,10 +162,10 @@ jobs:
           command: |
             cat $BASH_ENV
       - run:
-          name: Install dependencies
+          name: Retry Yarn Install
           command: |
             cd front
-            yarn install
+            for i in 1 2 3; do yarn install && break || sleep 30; done
       - run:
           name: Install Vercel CLI
           command: |
@@ -192,10 +192,10 @@ jobs:
             git submodule sync --recursive
             git submodule update --init --recursive
       - run:
-          name: Install dependencies
+          name: Retry Yarn Install
           command: |
             cd ~/project/front
-            yarn install
+            for i in 1 2 3; do yarn install && break || sleep 30; done
       - run:
           name: Run Vitest tests
           command: |
