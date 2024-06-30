@@ -44,7 +44,7 @@ jobs:
           command: |
             docker-compose -f docker-compose.dev.yml exec -T db bash -c "until pg_isready -h localhost -U postgres; do sleep 1; done"
       - run:
-          name: Install dependencies
+          name: Install API dependencies
           command: |
             cd ~/project/api
             gem install bundler
@@ -161,6 +161,11 @@ jobs:
           name: Show BASH_ENV
           command: |
             cat $BASH_ENV
+      - run:
+          name: Install dependencies
+          command: |
+            cd front
+            yarn install
       - run:
           name: Install Vercel CLI
           command: |

@@ -42,13 +42,13 @@ services:
     build:
       context: ./front
       args:
-        WORKDIR: $WORKDIR
+        WORKDIR: /app
         API_URL: "http://localhost:${API_PORT}"
     command: yarn dev
     environment:
       NUXT_PORT: ${FRONT_PORT}
     volumes:
-      - "./front:/$WORKDIR"
+      - "./front:/app"
     ports:
       - "${FRONT_PORT}:8080"
     depends_on:
