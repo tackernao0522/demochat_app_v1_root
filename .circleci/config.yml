@@ -44,7 +44,7 @@ jobs:
           command: |
             docker-compose -f docker-compose.dev.yml exec -T db bash -c "until pg_isready -h localhost -U postgres; do sleep 1; done"
       - run:
-          name: Install API dependencies
+          name: Install dependencies
           command: |
             cd ~/project/api
             gem install bundler
@@ -162,11 +162,6 @@ jobs:
           command: |
             cat $BASH_ENV
       - run:
-          name: Retry Yarn Install
-          command: |
-            cd front
-            for i in 1 2 3; do yarn install && break || sleep 30; done
-      - run:
           name: Install Vercel CLI
           command: |
             sudo yarn global add vercel
@@ -192,10 +187,10 @@ jobs:
             git submodule sync --recursive
             git submodule update --init --recursive
       - run:
-          name: Retry Yarn Install
+          name: Install dependencies
           command: |
             cd ~/project/front
-            for i in 1 2 3; do yarn install && break || sleep 30; done
+            yarn install
       - run:
           name: Run Vitest tests
           command: |
