@@ -10,7 +10,17 @@ app = "demochat-api"
   RAILS_SERVE_STATIC_FILES = "enabled"
 
 [deploy]
-  release_command = "bundle exec rails db:create db:migrate --trace"
+  release_command = """
+    echo "Debugging information:" &&
+    echo "Ruby version: $(ruby -v)" &&
+    echo "Rails version: $(rails -v)" &&
+    echo "Current directory: $(pwd)" &&
+    echo "Environment variables:" &&
+    env | grep RAILS &&
+    echo "Database configuration:" &&
+    cat config/database.yml &&
+    bundle exec rails db:create db:migrate --trace
+  """
 
 [experimental]
   private_network = true
@@ -33,5 +43,5 @@ app = "demochat-api"
     restart_limit = 6
     timeout = "2s"
 
-[region]
+[regions]
   primary = "nrt"
