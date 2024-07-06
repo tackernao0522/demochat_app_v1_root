@@ -58,6 +58,11 @@ jobs:
             bundle exec rails db:schema:load
             bundle exec rails db:migrate
       - run:
+          name: Check Rails configuration
+          command: |
+            cd ~/project/api
+            bundle exec rails runner "Rails.application.config.middleware.map(&:name)"
+      - run:
           name: Run RSpec tests
           command: |
             cd ~/project/api
@@ -119,11 +124,6 @@ jobs:
           command: |
             echo "Flyctl path: $(which flyctl)"
             flyctl version
-      - run:
-          name: Check Rails configuration
-          command: |
-            cd ~/project/api
-            bundle exec rails runner "Rails.application.config.middleware.map(&:name)"
       - run:
           name: Deploy to Fly.io
           command: |
