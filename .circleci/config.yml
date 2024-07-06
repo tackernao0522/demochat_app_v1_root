@@ -166,6 +166,11 @@ jobs:
           command: |
             sudo yarn global add vercel
       - run:
+          name: Check Rails configuration
+          command: |
+            cd ~/project/api
+            bundle exec rails runner "Rails.application.config.middleware.map(&:name)"
+      - run:
           name: Deploy to Vercel
           command: |
             source $BASH_ENV

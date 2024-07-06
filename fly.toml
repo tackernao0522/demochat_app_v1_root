@@ -17,6 +17,8 @@ app = "demochat-api"
     echo "Current directory: $(pwd)" &&
     echo "Environment variables:" &&
     env | grep RAILS &&
+    echo "Gem list:" &&
+    gem list &&
     echo "Database configuration:" &&
     cat config/database.yml &&
     bundle exec rails db:create db:migrate --trace
