@@ -47,6 +47,7 @@ services:
     command: yarn dev
     environment:
       NUXT_PORT: ${FRONT_PORT}
+      NUXT_ENV_ENCRYPTION_KEY: ${NUXT_ENV_ENCRYPTION_KEY}
     volumes:
       - "./front:/$WORKDIR"
     ports:

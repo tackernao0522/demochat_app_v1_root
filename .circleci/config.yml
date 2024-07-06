@@ -171,7 +171,8 @@ jobs:
             source $BASH_ENV
             echo "SKIP_FRONTEND_DEPLOY is $SKIP_FRONTEND_DEPLOY"
             if [ "$SKIP_FRONTEND_DEPLOY" != "true" ]; then
-              vercel --token $VERCEL_TOKEN --prod --yes --cwd ./front
+              vercel --token $VERCEL_TOKEN --prod --yes --cwd ./front \
+                -e NUXT_ENV_ENCRYPTION_KEY=${NUXT_ENV_ENCRYPTION_KEY}
             else
               echo "Skipping frontend deploy"
             fi
