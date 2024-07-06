@@ -10,7 +10,7 @@ app = "demochat-api"
   RAILS_SERVE_STATIC_FILES = "enabled"
 
 [deploy]
-  release_command = "bundle exec rails db:create db:migrate"
+  release_command = "bundle exec rails db:create db:migrate --trace"
 
 [experimental]
   private_network = true
