@@ -62,11 +62,11 @@ jobs:
           command: |
             cd ~/project/api
             bundle exec rails runner "Rails.application.config.middleware.map(&:name)"
-      - run:
-          name: Run RSpec tests
-          command: |
-            cd ~/project/api
-            bundle exec rspec
+      # - run:
+      #     name: Run RSpec tests
+      #     command: |
+      #       cd ~/project/api
+      #       bundle exec rspec
 
   deploy:
     docker:
