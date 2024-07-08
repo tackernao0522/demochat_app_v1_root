@@ -133,7 +133,7 @@ jobs:
               export FLY_API_TOKEN=${FLY_API_TOKEN}
               cd ~/project
               ls -la
-              flyctl deploy --config ./fly.toml -a demochat-api
+              flyctl deploy --config ./fly.toml -a demochat-api --wait-timeout 300
             else
               echo "Skipping API deploy"
             fi
