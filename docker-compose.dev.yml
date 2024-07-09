@@ -48,7 +48,6 @@ services:
     environment:
       NUXT_PORT: ${FRONT_PORT}
       NUXT_ENV_ENCRYPTION_KEY: ${NUXT_ENV_ENCRYPTION_KEY}
-      API_URL: "http://localhost:${API_PORT}"
     volumes:
       - "./front:/$WORKDIR"
     ports:
