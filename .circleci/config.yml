@@ -62,11 +62,11 @@ jobs:
           command: |
             cd ~/project/api
             bundle exec rails runner "Rails.application.config.middleware.map(&:name)"
-      - run:
-          name: Run RSpec tests
-          command: |
-            cd ~/project/api
-            bundle exec rspec
+       - run:
+           name: Run RSpec tests
+           command: |
+             cd ~/project/api
+             bundle exec rspec
 
   deploy:
     docker:
@@ -167,16 +167,6 @@ jobs:
           command: |
             cat $BASH_ENV
       - run:
-          name: Install dependencies
-          command: |
-            cd ~/project/front
-            yarn install
-      - run:
-          name: Build application
-          command: |
-            cd ~/project/front
-            NODE_ENV=production yarn build
-      - run:
           name: Install Vercel CLI
           command: |
             sudo yarn global add vercel
@@ -186,12 +176,8 @@ jobs:
             source $BASH_ENV
             echo "SKIP_FRONTEND_DEPLOY is $SKIP_FRONTEND_DEPLOY"
             if [ "$SKIP_FRONTEND_DEPLOY" != "true" ]; then
-              cd ~/project/front
-              vercel --token $VERCEL_TOKEN --prod --yes \
-                -e NUXT_ENV_ENCRYPTION_KEY=${NUXT_ENV_ENCRYPTION_KEY} \
-                -e BASIC_AUTH_USERNAME=${BASIC_AUTH_USERNAME} \
-                -e BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD} \
-                -e NODE_ENV=production
+              vercel --token $VERCEL_TOKEN --prod --yes --cwd ./front \
+                -e NUXT_ENV_ENCRYPTION_KEY=${NUXT_ENV_ENCRYPTION_KEY}
             else
               echo "Skipping frontend deploy"
             fi
@@ -229,13 +215,7 @@ workflows:
           requires:
             - build
             - test_frontend
-          filters:
-            branches:
-              only: main
       - deploy_frontend:
           requires:
             - build
             - test_frontend
-          filters:
-            branches:
-              only: main
