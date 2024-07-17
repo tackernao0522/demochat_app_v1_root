@@ -161,6 +161,7 @@ jobs:
             else
               echo "Frontend code changed, will deploy"
               echo "export SKIP_FRONTEND_DEPLOY=false" >> $BASH_ENV
+            fi
       - run:
           name: Show BASH_ENV
           command: |
