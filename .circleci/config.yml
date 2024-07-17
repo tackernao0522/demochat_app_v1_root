@@ -175,7 +175,7 @@ jobs:
           name: Build application
           command: |
             cd ~/project/front
-            yarn build
+            NODE_ENV=production yarn build
       - run:
           name: Install Vercel CLI
           command: |
@@ -190,7 +190,8 @@ jobs:
               vercel --token $VERCEL_TOKEN --prod --yes \
                 -e NUXT_ENV_ENCRYPTION_KEY=${NUXT_ENV_ENCRYPTION_KEY} \
                 -e BASIC_AUTH_USERNAME=${BASIC_AUTH_USERNAME} \
-                -e BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD}
+                -e BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD} \
+                -e NODE_ENV=production
             else
               echo "Skipping frontend deploy"
             fi
