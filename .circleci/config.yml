@@ -184,17 +184,17 @@ jobs:
           name: Deploy to Vercel
           command: |
             source $BASH_ENV
-            echo "SKIP_FRONTEND_DEPLOY is $SKIP_FRONTEND_DEPLOY"
-            if [ "$SKIP_FRONTEND_DEPLOY" != "true" ]; then
+            # echo "SKIP_FRONTEND_DEPLOY is $SKIP_FRONTEND_DEPLOY"
+            # if [ "$SKIP_FRONTEND_DEPLOY" != "true" ]; then
               cd ~/project/front
               vercel --token $VERCEL_TOKEN --prod --yes \
                 -e NUXT_ENV_ENCRYPTION_KEY=${NUXT_ENV_ENCRYPTION_KEY} \
                 -e BASIC_AUTH_USERNAME=${BASIC_AUTH_USERNAME} \
                 -e BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD} \
                 -e NODE_ENV=production
-            else
-              echo "Skipping frontend deploy"
-            fi
+            # else
+            #   echo "Skipping frontend deploy"
+            # fi
 
   test_frontend:
     docker:
