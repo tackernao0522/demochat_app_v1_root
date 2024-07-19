@@ -205,6 +205,7 @@ jobs:
       - run:
           name: Add node_modules/.bin to PATH
           command: |
+            cd ~/project/front
             export PATH=./node_modules/.bin:$PATH
             yarn test
 
