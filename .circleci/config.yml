@@ -5,6 +5,7 @@ executors:
     docker:
       - image: cimg/ruby:3.3.2
       - image: cimg/postgres:15.7
+      - image: cimg/node:current
     working_directory: ~/project
 
 jobs:
@@ -202,6 +203,11 @@ jobs:
           command: |
             cd ~/project/front
             yarn install
+      - run:
+          name: Install Vitest
+          command: |
+            cd ~/project/front
+            yarn add -D vitest
       - run:
           name: Run Vitest tests
           command: |
