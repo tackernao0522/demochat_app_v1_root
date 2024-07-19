@@ -201,6 +201,9 @@ jobs:
           name: Clear Yarn Cache
           command: yarn cache clean
       - run:
+          name: remove node_modules and yarn.lock
+          command: rm -rf node_modules yarn.lock
+      - run:
           name: Install dependencies
           command: |
             cd ~/project/front
