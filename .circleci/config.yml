@@ -203,7 +203,7 @@ jobs:
             cd ~/project/front
             yarn install --frozen-lockfile
       - run:
-          name: Add node_modules/.bin to PATH
+          name: Add node_modules/.bin to PATH and run tests
           command: |
             cd ~/project/front
             export PATH=./node_modules/.bin:$PATH
