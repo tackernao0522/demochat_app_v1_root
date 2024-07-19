@@ -68,27 +68,6 @@ jobs:
             cd ~/project/api
             bundle exec rspec
 
-  test_frontend:
-    docker:
-      - image: cimg/node:current
-    steps:
-      - checkout
-      - run:
-          name: Initialize and update submodules
-          command: |
-            git submodule sync --recursive
-            git submodule update --init --recursive
-      - run:
-          name: Install dependencies
-          command: |
-            cd ~/project/front
-            yarn install --frozen-lockfile
-      - run:
-          name: Run Vitest tests
-          command: |
-            cd ~/project/front
-            yarn run test
-
   deploy:
     docker:
       - image: cimg/base:stable
@@ -195,8 +174,8 @@ jobs:
           name: Deploy to Vercel
           command: |
             source $BASH_ENV
-             echo "SKIP_FRONTEND_DEPLOY is $SKIP_FRONTEND_DEPLOY"
-             if [ "$SKIP_FRONTEND_DEPLOY" != "true" ]; then
+            echo "SKIP_FRONTEND_DEPLOY is $SKIP_FRONTEND_DEPLOY"
+            if [ "$SKIP_FRONTEND_DEPLOY" != "true" ]; then
               vercel --token $VERCEL_TOKEN --prod --yes --cwd ./front \
                 -e NUXT_ENV_ENCRYPTION_KEY=${NUXT_ENV_ENCRYPTION_KEY} \
                 -e API_URL=${API_URL} \
@@ -204,9 +183,30 @@ jobs:
                 -e LOG_LEVEL=${LOG_LEVEL} \
                 -e BASIC_AUTH_USER=${BASIC_AUTH_USER} \
                 -e BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD}
-             else
-               echo "Skipping frontend deploy"
-             fi
+            else
+              echo "Skipping frontend deploy"
+            fi
+
+  test_frontend:
+    docker:
+      - image: cimg/node:current
+    steps:
+      - checkout
+      - run:
+          name: Initialize and update submodules
+          command: |
+            git submodule sync --recursive
+            git submodule update --init --recursive
+      - run:
+          name: Install dependencies
+          command: |
+            cd ~/project/front
+            yarn install --frozen-lockfile
+      - run:
+          name: Add node_modules/.bin to PATH
+          command: |
+            export PATH=./node_modules/.bin:$PATH
+            yarn test
 
 workflows:
   version: 2
