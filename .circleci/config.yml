@@ -207,6 +207,11 @@ jobs:
           command: |
             yarn add vitest --dev
       - run:
+          name: Build Nuxt.js project
+          command: |
+            cd ~/project/front
+            yarn build
+      - run:
           name: Run Vitest tests
           command: |
             cd ~/project/front
@@ -222,9 +227,3 @@ workflows:
             - build
       - deploy:
           requires:
-            - build
-            - test_frontend
-      - deploy_frontend:
-          requires:
-            - build
-            - test_frontend
