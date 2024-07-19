@@ -203,6 +203,10 @@ jobs:
             cd ~/project/front
             yarn install
       - run:
+          name: Install vitest
+          command: |
+            yarn add vitest --dev
+      - run:
           name: Run Vitest tests
           command: |
             cd ~/project/front
