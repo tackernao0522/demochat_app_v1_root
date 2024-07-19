@@ -7,6 +7,11 @@ executors:
       - image: cimg/postgres:15.7
     working_directory: ~/project
 
+  node-executor:
+    docker:
+      - image: cimg/node:18.16
+    working_directory: ~/project
+
 jobs:
   build:
     executor: docker-executor
@@ -188,8 +193,7 @@ jobs:
              fi
 
   test_frontend:
-    docker:
-      - image: cimg/node:current
+    executor: node-executor
     steps:
       - checkout
       - run:
@@ -197,11 +201,18 @@ jobs:
           command: |
             git submodule sync --recursive
             git submodule update --init --recursive
+      - restore_cache:
+          keys:
+            - yarn-packages-{{ checksum "front/yarn.lock" }}
       - run:
           name: Install dependencies
           command: |
             cd ~/project/front
-            yarn install
+            yarn install --frozen-lockfile
+      - save_cache:
+          paths:
+            - ~/.cache/yarn
+          key: yarn-packages-{{ checksum "front/yarn.lock" }}
       - run:
           name: Run Vitest tests
           command: |
