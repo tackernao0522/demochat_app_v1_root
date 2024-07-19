@@ -68,6 +68,27 @@ jobs:
             cd ~/project/api
             bundle exec rspec
 
+  test_frontend:
+    docker:
+      - image: cimg/node:current
+    steps:
+      - checkout
+      - run:
+          name: Initialize and update submodules
+          command: |
+            git submodule sync --recursive
+            git submodule update --init --recursive
+      - run:
+          name: Install dependencies
+          command: |
+            cd ~/project/front
+            yarn install --frozen-lockfile
+      - run:
+          name: Run Vitest tests
+          command: |
+            cd ~/project/front
+            yarn run test
+
   deploy:
     docker:
       - image: cimg/base:stable
@@ -186,30 +207,6 @@ jobs:
              else
                echo "Skipping frontend deploy"
              fi
-
-  test_frontend:
-    docker:
-      - image: cimg/node:current
-    steps:
-      - checkout
-      - run:
-          name: Initialize and update submodules
-          command: |
-            git submodule sync --recursive
-            git submodule update --init --recursive
-      - run:
-          name: Clear Yarn Cache
-          command: yarn cache clean
-      - run:
-          name: Install dependencies
-          command: |
-            cd ~/project/front
-            yarn install --frozen-lockfile
-      - run:
-          name: Run Vitest tests
-          command: |
-            cd ~/project/front
-            yarn test
 
 workflows:
   version: 2
