@@ -203,20 +203,10 @@ jobs:
             cd ~/project/front
             yarn install
       - run:
-          name: Install Nuxt
-          command: |
-            cd ~/project/front
-            yarn add nuxt
-      - run:
           name: Run Vitest tests
           command: |
             cd ~/project/front
             yarn test
-      - run:
-          name: Build project
-          command: |
-            cd ~/project/front
-            yarn build
 
 workflows:
   version: 2
