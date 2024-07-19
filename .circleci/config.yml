@@ -174,18 +174,19 @@ jobs:
           name: Deploy to Vercel
           command: |
             source $BASH_ENV
-             echo "SKIP_FRONTEND_DEPLOY is $SKIP_FRONTEND_DEPLOY"
-             if [ "$SKIP_FRONTEND_DEPLOY" != "true" ]; then
-              vercel --token $VERCEL_TOKEN --prod --yes --cwd ./front \
+            echo "SKIP_FRONTEND_DEPLOY is $SKIP_FRONTEND_DEPLOY"
+            if [ "$SKIP_FRONTEND_DEPLOY" != "true" ]; then
+              cd ~/project/front
+              vercel --token $VERCEL_TOKEN --prod --yes \
                 -e NUXT_ENV_ENCRYPTION_KEY=${NUXT_ENV_ENCRYPTION_KEY} \
                 -e API_URL=${API_URL} \
                 -e NODE_ENV=${NODE_ENV} \
                 -e LOG_LEVEL=${LOG_LEVEL} \
                 -e BASIC_AUTH_USER=${BASIC_AUTH_USER} \
                 -e BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD}
-             else
-               echo "Skipping frontend deploy"
-             fi
+            else
+              echo "Skipping frontend deploy"
+            fi
 
   test_frontend:
     docker:
@@ -202,6 +203,11 @@ jobs:
           command: |
             cd ~/project/front
             yarn install
+      - run:
+          name: Build project
+          command: |
+            cd ~/project/front
+            yarn build
       - run:
           name: Run Vitest tests
           command: |
